@@ -415,7 +415,9 @@ class ToplevelPPanel(PPanel):
 		PPanel.__init__(self, session = session, node = newdoc.documentElement, deletenode = newdoc)
 
 	def load(self, ppaneldir, newdoc):
-		for ppanelfile in listdir(ppaneldir):
+		filelist = listdir(ppaneldir)
+		filelist.sort()
+		for ppanelfile in filelist:
 			if ppanelfile.endswith(".xml"):
 				fullname = path.join(ppaneldir, ppanelfile)
 				if path.isfile(fullname):

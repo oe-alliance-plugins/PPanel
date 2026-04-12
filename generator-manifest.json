@@ -1,0 +1,24 @@
+{
+  "depends": "",
+  "description": "PPanel",
+  "legacy_setup": {
+    "description": "PPanel",
+    "has_setup_translate": false,
+    "name": "enigma2-plugin-extensions-ppanel",
+    "package_data": [],
+    "package_dir_value": "",
+    "packages": [],
+    "pkg": "Extensions.PPanel",
+    "version": "0.1"
+  },
+  "module_dir_name": "PPanel",
+  "package_name": "enigma2-plugin-extensions-ppanel",
+  "plugin_group": "extensions",
+  "source_repo_branch": "python3",
+  "source_repo_name": "e2openplugin-PPanel",
+  "source_repo_url": "https://github.com/E2OpenPlugins/e2openplugin-PPanel.git",
+  "target_repo_branch": "main",
+  "target_repo_name": "PPanel",
+  "target_repo_url": "git@github.com:oe-alliance-plugins/PPanel.git",
+  "version": "0.1"
+}

@@ -15,13 +15,25 @@ from Screens.MessageBox import MessageBox
 from Components.ActionMap import ActionMap
 from Components.ProgressBar import ProgressBar
 from .url import *
-import six
 
 from socket import gethostbyname
 
 from enigma import eConsoleAppContainer
 
+try:
+	_
+except NameError:
+	def _(text):
+		return text
+
 class PPanelEntry(Screen):
+	@staticmethod
+	def _coerce_text(value):
+		if isinstance(value, bytes):
+			return value.decode("utf-8", "replace")
+		if value is None:
+			return ""
+		return str(value)
 	def __init__(self, session, name, node):
 		Screen.__init__(self, session)
 		self.name = name
@@ -102,7 +114,7 @@ class PPanel(PPanelEntry):
 
 		self.runBeforeOut = e.getAttribute("runBeforeOut")
 
-		confirmation = six.ensure_str(e.getAttribute("confirmation"))
+		confirmation = str(e.getAttribute("confirmation"))
 		if confirmation != '':
 			if confirmation == "true":
 				self.session.openWithCallback(self.confirmationResult, MessageBox, _("Are you sure?"))
@@ -127,7 +139,7 @@ class PPanel(PPanelEntry):
 			return
 
 		if e.localName == "ppanel":
-			target = six.ensure_str(e.getAttribute("target"))
+			target = str(e.getAttribute("target"))
 			self.session.open(PPanel, name, e, target)
 		elif e.localName == "category":
 			self.session.open(PPanel, name, e)
@@ -136,7 +148,7 @@ class PPanel(PPanelEntry):
 		elif e.localName == "tarball":
 			self.session.open(Tarball, name, e)
 		elif e.localName == "execute":
-			target = six.ensure_str(e.getAttribute("target"))
+			target = str(e.getAttribute("target"))
 			self.session.open(Execute, name, e, target)
 		#elif e.localName == "picture":
 		#	self.session.open(Picture, name, e)
@@ -186,7 +198,7 @@ class PPanel(PPanelEntry):
 					#TODO
 					continue
 
-				name = six.ensure_str(e.getAttribute("name"))
+				name = str(e.getAttribute("name"))
 				if name == '':
 					continue
 
@@ -195,7 +207,7 @@ class PPanel(PPanelEntry):
 					self.nodelist.append((str(name),))
 					continue
 
-				helptext = six.ensure_str(e.getAttribute("helptext"))
+				helptext = str(e.getAttribute("helptext"))
 
 				self.nodelist.append((str(name), e, str(helptext)))
 
@@ -245,18 +257,18 @@ class File(PPanelEntry):
 		self["progress"].setValue(p)
 
 	def responseCompleted(self, string=""):
-		string = six.ensure_str(string)
+		string = self._coerce_text(string)
 		print("[PPanel File] Download succeeded. "+string)
 		self.close()
 
 	def responseFailed(self, string=""):
-		string = six.ensure_str(string)
+		string = self._coerce_text(string)
 		print("[PPanel File] Download failed. "+string)
 		self.close()
 
 	def abort(self):
 		if self.downloader is not None:
-			self.downloader.stop
+			self.downloader.stop()
 		self.close()
 
 class Tarball(PPanelEntry):
@@ -297,14 +309,14 @@ class Tarball(PPanelEntry):
 		self["progress"].setValue(p)
 
 	def responseCompleted(self, string=""):
-		string = six.ensure_str(string)
+		string = self._coerce_text(string)
 		print("[PPanel File] Download succeeded. "+string)
 		system("tar -zxvf /tmp/tarball.tar.gz -C " + self.target)
 		system("rm /tmp/tarball.tar.gz")
 		self.close()
 
 	def responseFailed(self, string=""):
-		string = six.ensure_str(string)
+		string = self._coerce_text(string)
 		print("[PPanel File] Download failed. "+string)
 		self.close()
 
@@ -358,7 +370,7 @@ class Execute(PPanelEntry):
 		self.setList()
 
 	def dataAvail(self, string):
-		string = six.ensure_str(string)
+		string = self._coerce_text(string)
 		print("dataAvail: " + string)
 		self.data += string
 

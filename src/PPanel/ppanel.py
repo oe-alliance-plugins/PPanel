@@ -26,6 +26,7 @@ except NameError:
 	def _(text):
 		return text
 
+
 class PPanelEntry(Screen):
 	@staticmethod
 	def _coerce_text(value):
@@ -34,6 +35,7 @@ class PPanelEntry(Screen):
 		if value is None:
 			return ""
 		return str(value)
+
 	def __init__(self, session, name, node):
 		Screen.__init__(self, session)
 		self.name = name
@@ -66,6 +68,7 @@ class PPanelEntry(Screen):
 		if self.runAfterOut != '':
 			self.session.open(Execute, self.name, None, self.runAfterOut)
 
+
 class PPanel(PPanelEntry):
 	skin = """
 	<screen position="c-250,c-200" size="500,400">
@@ -73,7 +76,7 @@ class PPanel(PPanelEntry):
 		<widget name="helptext" position="5,e-35" size="e-10,30" valign="center" halign="left" font="Regular;20" />
 	</screen>"""
 
-	def __init__(self, session, name = 'PPanel', node = None, filename = '', deletenode = None):
+	def __init__(self, session, name='PPanel', node=None, filename='', deletenode=None):
 		self.skin = PPanel.skin
 		PPanelEntry.__init__(self, session, name, node)
 		self.nodelist = []
@@ -186,13 +189,13 @@ class PPanel(PPanelEntry):
 				#only ELEMENT_NODE has attributes
 				if e.hasAttribute("condition"):
 					condition = e.getAttribute("condition")
-					result = system(condition)>>8
+					result = system(condition) >> 8
 					if result:
 						continue
 
 				if e.localName == "separator":
 					#note the trailing comma, we create a one element tuple here (so the listbox considers this a nonselectable entry)
-					self.nodelist.append((str(("-"*40)),))
+					self.nodelist.append((str(("-" * 40)),))
 					continue
 				elif e.localName == "update":
 					#TODO
@@ -218,6 +221,7 @@ class PPanel(PPanelEntry):
 			self.deletenode.unlink()
 			del self.deletenode
 			self.deletenode = None
+
 
 class File(PPanelEntry):
 	skin = """
@@ -253,23 +257,24 @@ class File(PPanelEntry):
 		self.downloader.start().addCallback(self.responseCompleted).addErrback(self.responseFailed)
 
 	def progress(self, current, total):
-		p = int(100*current/float(total))
+		p = int(100 * current / float(total))
 		self["progress"].setValue(p)
 
 	def responseCompleted(self, string=""):
 		string = self._coerce_text(string)
-		print("[PPanel File] Download succeeded. "+string)
+		print("[PPanel File] Download succeeded. " + string)
 		self.close()
 
 	def responseFailed(self, string=""):
 		string = self._coerce_text(string)
-		print("[PPanel File] Download failed. "+string)
+		print("[PPanel File] Download failed. " + string)
 		self.close()
 
 	def abort(self):
 		if self.downloader is not None:
 			self.downloader.stop()
 		self.close()
+
 
 class Tarball(PPanelEntry):
 	skin = """
@@ -305,25 +310,26 @@ class Tarball(PPanelEntry):
 		self.downloader.start().addCallback(self.responseCompleted).addErrback(self.responseFailed)
 
 	def progress(self, current, total):
-		p = int(100*current/float(total))
+		p = int(100 * current / float(total))
 		self["progress"].setValue(p)
 
 	def responseCompleted(self, string=""):
 		string = self._coerce_text(string)
-		print("[PPanel File] Download succeeded. "+string)
+		print("[PPanel File] Download succeeded. " + string)
 		system("tar -zxvf /tmp/tarball.tar.gz -C " + self.target)
 		system("rm /tmp/tarball.tar.gz")
 		self.close()
 
 	def responseFailed(self, string=""):
 		string = self._coerce_text(string)
-		print("[PPanel File] Download failed. "+string)
+		print("[PPanel File] Download failed. " + string)
 		self.close()
 
 	def abort(self):
 		if self.downloader is not None:
 			self.downloader.stop()
 		self.close()
+
 
 class Execute(PPanelEntry):
 	skin = """
@@ -397,13 +403,16 @@ class Execute(PPanelEntry):
 			self.offset = self.offset + 20
 			self.setList()
 
+
 class Picture(PPanelEntry):
 	def __init__(self, session, name, node):
 		PPanelEntry.__init__(self, session, name, node)
 
+
 class Remove(PPanelEntry):
 	def __init__(self, session, name, node):
 		PPanelEntry.__init__(self, session, name, node)
+
 
 class Media(PPanelEntry):
 	def __init__(self, name, node):
@@ -424,7 +433,7 @@ class ToplevelPPanel(PPanel):
 			print("Cannot load /etc/ppanels/", ex)
 		if path.isdir("/etc/enigma2/ppanels"):
 			self.load("/etc/enigma2/ppanels/", newdoc)
-		PPanel.__init__(self, session = session, node = newdoc.documentElement, deletenode = newdoc)
+		PPanel.__init__(self, session=session, node=newdoc.documentElement, deletenode=newdoc)
 
 	def load(self, ppaneldir, newdoc):
 		filelist = listdir(ppaneldir)
@@ -449,6 +458,7 @@ class ToplevelPPanel(PPanel):
 						del node
 					except:
 						print("Illegal xml file", fullname)
+
 
 class PLiPPanel:
 	def __init__(self):

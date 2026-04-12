@@ -1,12 +1,8 @@
-from __future__ import absolute_import
-from __future__ import print_function
 from xml.dom.minidom import parse, getDOMImplementation
 #import gettext
 
 from os import system, path, listdir
 
-from Components.GUIComponent import *
-#from Components.HTMLComponent import *
 from Components.Button import Button
 from Components.MenuList import MenuList
 from Components.Label import Label
@@ -14,9 +10,7 @@ from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
 from Components.ActionMap import ActionMap
 from Components.ProgressBar import ProgressBar
-from .url import *
-
-from socket import gethostbyname
+# from .url import *
 
 from enigma import eConsoleAppContainer
 
@@ -102,17 +96,17 @@ class PPanel(PPanelEntry):
 
 	def nodeSelectionChanged(self):
 		selection = self["nodelist"].getCurrent()
-		if selection == None or len(selection) < 3:
+		if selection is None or len(selection) < 3:
 			return
 		helptext = selection[2]
 		self["helptext"].setText(helptext)
 
 	def okbuttonClick(self):
 		selection = self["nodelist"].getCurrent()
-		if selection == None or len(selection) < 3:
+		if selection is None or len(selection) < 3:
 			return
 		e = selection[1]
-		if e == None:
+		if e is None:
 			return
 
 		self.runBeforeOut = e.getAttribute("runBeforeOut")
@@ -128,10 +122,10 @@ class PPanel(PPanelEntry):
 
 	def openSelectedNode(self):
 		selection = self["nodelist"].getCurrent()
-		if selection == None or len(selection) < 3:
+		if selection is None or len(selection) < 3:
 			return
 		e = selection[1]
-		if e == None:
+		if e is None:
 			return
 		name = selection[0]
 
@@ -174,7 +168,7 @@ class PPanel(PPanelEntry):
 			#instead of the node that we got in our constructor, we need to parse a new node from a file
 			try:
 				node = parse(self.filename)
-			except:
+			except Exception:
 				print("Illegal xml file")
 				print(self.filename)
 				return
@@ -415,13 +409,13 @@ class Remove(PPanelEntry):
 
 
 class Media(PPanelEntry):
-	def __init__(self, name, node):
+	def __init__(self, session, name, node):
 		PPanelEntry.__init__(self, session, name, node)
 
 
 class ToplevelPPanel(PPanel):
 	def __init__(self, session):
-		ppaneldir = "/etc/ppanels/"
+		# ppaneldir = "/etc/ppanels/"
 		impl = getDOMImplementation()
 		newdoc = impl.createDocument(None, "directory", None)
 		attr = newdoc.createAttribute("name")
@@ -456,7 +450,7 @@ class ToplevelPPanel(PPanel):
 								ppanel.setAttributeNode(attr)
 								newdoc.documentElement.appendChild(ppanel)
 						del node
-					except:
+					except Exception:
 						print("Illegal xml file", fullname)
 
 
